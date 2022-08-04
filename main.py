@@ -35,13 +35,8 @@ class TuringMachine:
             steps += 1
         return [time.time() - startTime, steps]
 
-def generateTape(leadingZeroes, centreConfig, trailingZeroes):
-    return ([0] * leadingZeroes) + centreConfig + ([0] * trailingZeroes)
-        
-
-def main():
-    # 5-state busy beaver contender
-    instructionTable = [
+presets = {
+    "busyBeaver5": TuringMachine(1, [
         [   # State A
             [1, "R", 2],    # 0
             [1, "L", 3]     # 1
@@ -62,20 +57,22 @@ def main():
             [1, "R", 0],    # 0
             [0, "L", 1]     # 1
         ]
-    ]
+    ], [0] * 25000, 12500),
+}
 
-    tape = [0] * 25000
+def generateTape(leadingZeroes, centreConfig, trailingZeroes):
+    return ([0] * leadingZeroes) + centreConfig + ([0] * trailingZeroes)
 
-    turingMachine = TuringMachine(1, instructionTable, tape, 12500)
+def main():
+    turingMachine = presets["busyBeaver5"]
     runInfo = turingMachine.run()
 
     print(f"Time taken: {runInfo[0]} seconds")
     print(f"Total steps: {runInfo[1]}")
     print(f"Steps per second: {runInfo[1] / runInfo[0]}")
 
-    # print(turingMachine.tape)
-    print(turingMachine.tape.count(1))
-    
+    if input(f"View tape? Y/N (Length = {len(turingMachine.tape)}) ") == "Y":
+        print(turingMachine.tape)
 
 if __name__ == "__main__":
     main()
